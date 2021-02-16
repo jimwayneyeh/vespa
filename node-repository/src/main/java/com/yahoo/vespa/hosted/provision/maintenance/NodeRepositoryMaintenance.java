@@ -64,6 +64,7 @@ public class NodeRepositoryMaintenance extends AbstractComponent {
         maintainers.add(new AutoscalingMaintainer(nodeRepository, metricsDb, deployer, metric, defaults.autoscalingInterval));
         maintainers.add(new ScalingSuggestionsMaintainer(nodeRepository, metricsDb, defaults.scalingSuggestionsInterval, metric));
         maintainers.add(new SwitchRebalancer(nodeRepository, defaults.switchRebalancerInterval, metric, deployer));
+        maintainers.add(new DedicatedClusterControllerClusterMigrator(deployer, metric, nodeRepository, defaults.dedicatedClusterControllerMigratorInterval, flagSource));
 
         provisionServiceProvider.getLoadBalancerService(nodeRepository)
                                 .map(lbService -> new LoadBalancerExpirer(nodeRepository, defaults.loadBalancerExpirerInterval, lbService, metric))
@@ -113,6 +114,7 @@ public class NodeRepositoryMaintenance extends AbstractComponent {
         private final Duration autoscalingInterval;
         private final Duration scalingSuggestionsInterval;
         private final Duration switchRebalancerInterval;
+        private final Duration dedicatedClusterControllerMigratorInterval;
 
         private final NodeFailer.ThrottlePolicy throttlePolicy;
 
@@ -140,6 +142,7 @@ public class NodeRepositoryMaintenance extends AbstractComponent {
             spareCapacityMaintenanceInterval = Duration.ofMinutes(30);
             switchRebalancerInterval = Duration.ofHours(1);
             throttlePolicy = NodeFailer.ThrottlePolicy.hosted;
+            dedicatedClusterControllerMigratorInterval = Duration.ofHours(3);
 
             if (zone.environment().equals(Environment.prod) && ! zone.system().isCd()) {
                 inactiveExpiry = Duration.ofHours(4); // enough time for the application owner to discover and redeploy
