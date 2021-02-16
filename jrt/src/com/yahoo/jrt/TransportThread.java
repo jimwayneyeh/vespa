@@ -326,7 +326,9 @@ public class TransportThread {
             Connection conn = (Connection) key.attachment();
             handleCloseConnection(conn);
         }
-        try { selector.close(); } catch (Exception e) {}
+        try { selector.close(); } catch (Exception e) {
+            System.out.println(e);
+        }
         parent.notifyDone(this);
     }
 
@@ -346,7 +348,9 @@ public class TransportThread {
             try {
                 thread.join();
                 return;
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
         }
     }
 }

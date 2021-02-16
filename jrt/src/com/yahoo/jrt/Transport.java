@@ -218,7 +218,9 @@ public class Transport {
     void notifyDone(TransportThread self) {
         if (runCnt.decrementAndGet() == 0) {
             worker.shutdown().join();
-            try { cryptoEngine.close(); } catch (Exception e) {}
+            try { cryptoEngine.close(); } catch (Exception e) {
+                System.out.println(e);
+            }
         }
     }
 

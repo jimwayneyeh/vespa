@@ -249,7 +249,10 @@ public class TlsCryptoSocket implements CryptoSocket {
 
     private int applicationDataWrap(ByteBuffer src) throws IOException {
         SSLEngineResult result = sslEngineWrap(src);
-        if (result.getHandshakeStatus() != HandshakeStatus.NOT_HANDSHAKING) throw new SSLException("Renegotiation detected");
+        if (result.getHandshakeStatus() != HandshakeStatus.NOT_HANDSHAKING) {
+            System.out.println("data wrap renegotiation detected, isClient=" + sslEngine.getUseClientMode());
+//            throw new SSLException("Renegotiation detected");
+        }
         switch (result.getStatus()) {
             case OK:
                 return result.bytesConsumed();
@@ -281,7 +284,10 @@ public class TlsCryptoSocket implements CryptoSocket {
 
     private int applicationDataUnwrap(ByteBuffer dst) throws IOException {
         SSLEngineResult result = sslEngineUnwrap(dst);
-        if (result.getHandshakeStatus() != HandshakeStatus.NOT_HANDSHAKING) throw new SSLException("Renegotiation detected");
+        if (result.getHandshakeStatus() != HandshakeStatus.NOT_HANDSHAKING) {
+            System.out.println("data unwrap renegotiation detected, isClient=" + sslEngine.getUseClientMode());
+//            throw new SSLException("Renegotiation detected");
+        }
         switch (result.getStatus()) {
             case OK:
                 return result.bytesProduced();
@@ -295,14 +301,18 @@ public class TlsCryptoSocket implements CryptoSocket {
 
     private SSLEngineResult sslEngineUnwrap(ByteBuffer dst) throws IOException {
         SSLEngineResult result = sslEngine.unwrap(unwrapBuffer.getReadable(), dst);
-        if (result.getStatus() == Status.CLOSED) throw new ClosedChannelException();
+        if (result.getStatus() == Status.CLOSED) {
+            throw new ClosedChannelException();
+        }
         return result;
     }
 
     // returns number of bytes read
     private int channelRead() throws IOException {
         int read = channel.read(unwrapBuffer.getWritable(sessionPacketBufferSize));
-        if (read == -1) throw new ClosedChannelException();
+        if (read == -1) {
+            throw new ClosedChannelException();
+        }
         return read;
     }
 

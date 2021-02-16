@@ -45,17 +45,17 @@ public class EchoTest {
 
     @Parameters(name = "{0}") public static Object[] engines() {
         return new Object[][] {
-                {
-                        new NullCryptoEngine(),
-                        (MetricsAssertions) metrics -> {
-                            assertEquals(1, metrics.serverUnencryptedConnectionsEstablished());
-                            assertEquals(1, metrics.clientUnencryptedConnectionsEstablished());
-                        },
-                        null},
-                {
-                        new XorCryptoEngine(),
-                        null,
-                        null},
+//                {
+//                        new NullCryptoEngine(),
+//                        (MetricsAssertions) metrics -> {
+//                            assertEquals(1, metrics.serverUnencryptedConnectionsEstablished());
+//                            assertEquals(1, metrics.clientUnencryptedConnectionsEstablished());
+//                        },
+//                        null},
+//                {
+//                        new XorCryptoEngine(),
+//                        null,
+//                        null},
                 {
                         new TlsCryptoEngine(createTestTlsContext()),
                         (MetricsAssertions) metrics -> {
@@ -66,25 +66,25 @@ public class EchoTest {
                             List<X509Certificate> chain = context.peerCertificateChain();
                             assertEquals(1, chain.size());
                             assertEquals(CryptoUtils.certificate, chain.get(0));
-                        }},
-                {
-                        new MaybeTlsCryptoEngine(new TlsCryptoEngine(createTestTlsContext()), false),
-                        (MetricsAssertions) metrics -> {
-                            assertEquals(1, metrics.serverUnencryptedConnectionsEstablished());
-                            assertEquals(1, metrics.clientUnencryptedConnectionsEstablished());
-                        },
-                        null},
-                {
-                        new MaybeTlsCryptoEngine(new TlsCryptoEngine(createTestTlsContext()), true),
-                        (MetricsAssertions) metrics -> {
-                             assertEquals(1, metrics.serverTlsConnectionsEstablished());
-                             assertEquals(1, metrics.clientTlsConnectionsEstablished());
-                        },
-                        (SecurityContextAssertion) context -> {
-                            List<X509Certificate> chain = context.peerCertificateChain();
-                            assertEquals(1, chain.size());
-                            assertEquals(CryptoUtils.certificate, chain.get(0));
                         }}};
+//                {
+//                        new MaybeTlsCryptoEngine(new TlsCryptoEngine(createTestTlsContext()), false),
+//                        (MetricsAssertions) metrics -> {
+//                            assertEquals(1, metrics.serverUnencryptedConnectionsEstablished());
+//                            assertEquals(1, metrics.clientUnencryptedConnectionsEstablished());
+//                        },
+//                        null},
+//                {
+//                        new MaybeTlsCryptoEngine(new TlsCryptoEngine(createTestTlsContext()), true),
+//                        (MetricsAssertions) metrics -> {
+//                             assertEquals(1, metrics.serverTlsConnectionsEstablished());
+//                             assertEquals(1, metrics.clientTlsConnectionsEstablished());
+//                        },
+//                        (SecurityContextAssertion) context -> {
+//                            List<X509Certificate> chain = context.peerCertificateChain();
+//                            assertEquals(1, chain.size());
+//                            assertEquals(CryptoUtils.certificate, chain.get(0));
+//                        }}};
     }
 
     @Before
