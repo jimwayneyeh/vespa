@@ -119,6 +119,8 @@ public interface ModelContext {
         // Note: Used in unit tests (set to false in TestProperties) to avoid needing to deal with implicitly created node for logserver
         default boolean useDedicatedNodeForLogserver() { return true; }
 
+        default boolean dedicatedClusterControllerCluster() { return false; }
+
     }
 
     @Retention(RetentionPolicy.RUNTIME)

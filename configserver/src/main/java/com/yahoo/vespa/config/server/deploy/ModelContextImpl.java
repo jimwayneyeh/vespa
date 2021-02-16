@@ -235,6 +235,7 @@ public class ModelContextImpl implements ModelContext {
         private final Optional<AthenzDomain> athenzDomain;
         private final Optional<ApplicationRoles> applicationRoles;
         private final Quota quota;
+        private final boolean dedicatedClusterControllerCluster;
 
         private final String jvmGcOptions;
 
@@ -248,7 +249,8 @@ public class ModelContextImpl implements ModelContext {
                           Optional<EndpointCertificateSecrets> endpointCertificateSecrets,
                           Optional<AthenzDomain> athenzDomain,
                           Optional<ApplicationRoles> applicationRoles,
-                          Optional<Quota> maybeQuota) {
+                          Optional<Quota> maybeQuota,
+                          boolean dedicatedClusterControllerCluster) {
             this.featureFlags = new FeatureFlags(flagSource, applicationId);
             this.applicationId = applicationId;
             this.multitenant = configserverConfig.multitenant() || configserverConfig.hostedVespa() || Boolean.getBoolean("multitenant");
@@ -265,6 +267,7 @@ public class ModelContextImpl implements ModelContext {
             this.athenzDomain = athenzDomain;
             this.applicationRoles = applicationRoles;
             this.quota = maybeQuota.orElseGet(Quota::unlimited);
+            this.dedicatedClusterControllerCluster = dedicatedClusterControllerCluster;
 
             jvmGcOptions = flagValue(flagSource, applicationId, PermanentFlags.JVM_GC_OPTIONS);
         }
@@ -322,6 +325,8 @@ public class ModelContextImpl implements ModelContext {
         @Override public Quota quota() { return quota; }
 
         @Override public String jvmGCOptions() { return jvmGcOptions; }
+
+        @Override public boolean dedicatedClusterControllerCluster() { return dedicatedClusterControllerCluster; }
 
         private static <V> V flagValue(FlagSource source, ApplicationId appId, UnboundFlag<? extends V, ?, ?> flag) {
             return flag.bindTo(source)
